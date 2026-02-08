@@ -26,7 +26,7 @@
           <!-- テキスト -->
           <div class="control-group">
             <label class="control-label" for="text-input">テキスト</label>
-            <input type="text" id="text-input" class="text-input" maxlength="4" placeholder="1〜4文字を入力" value="OK">
+            <input type="text" id="text-input" class="text-input" maxlength="4" placeholder="4文字まで（3〜4文字は2行表示）" value="OK">
           </div>
 
           <!-- フォント -->
@@ -59,51 +59,49 @@
             </div>
           </div>
 
-          <!-- 背景色 -->
-          <div class="control-group">
-            <label class="control-label">背景色</label>
-            <div class="color-control">
-              <input type="color" id="bg-color-picker" class="color-picker" value="#5C6BC0">
-              <span class="color-hex" id="bg-color-hex">#5C6BC0</span>
+          <!-- 背景色・文字色 横並び -->
+          <div class="color-row">
+            <div class="control-group color-half">
+              <label class="control-label">背景色</label>
+              <div class="color-control">
+                <input type="color" id="bg-color-picker" class="color-picker" value="#5C6BC0">
+                <span class="color-hex" id="bg-color-hex">#5C6BC0</span>
+              </div>
+              <div class="color-swatches" id="bg-swatches"></div>
             </div>
-            <div class="color-swatches" id="bg-swatches"></div>
-          </div>
-
-          <!-- 文字色 -->
-          <div class="control-group">
-            <label class="control-label">文字色</label>
-            <div class="color-control">
-              <input type="color" id="text-color-picker" class="color-picker" value="#FFFFFF">
-              <span class="color-hex" id="text-color-hex">#FFFFFF</span>
-            </div>
-            <div class="color-swatches" id="text-swatches"></div>
-          </div>
-
-          <!-- 形状 -->
-          <div class="control-group">
-            <label class="control-label">形状</label>
-            <div class="button-group" id="shape-group">
-              <button class="btn-option active" data-value="square" type="button">正方形</button>
-              <button class="btn-option" data-value="rounded" type="button">角丸</button>
+            <div class="control-group color-half">
+              <label class="control-label">文字色</label>
+              <div class="color-control">
+                <input type="color" id="text-color-picker" class="color-picker" value="#FFFFFF">
+                <span class="color-hex" id="text-color-hex">#FFFFFF</span>
+              </div>
+              <div class="color-swatches" id="text-swatches"></div>
             </div>
           </div>
 
-          <!-- 背景透過 -->
-          <div class="control-group control-group-row">
-            <label class="control-label">背景透過</label>
-            <label class="toggle-switch">
-              <input type="checkbox" id="transparent-toggle">
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-
-          <!-- 出力サイズ -->
-          <div class="control-group">
-            <label class="control-label">出力サイズ</label>
-            <div class="button-group" id="resolution-group">
-              <button class="btn-option active" data-value="128" type="button">128px</button>
-              <button class="btn-option" data-value="256" type="button">256px</button>
-              <button class="btn-option" data-value="512" type="button">512px</button>
+          <!-- 形状・透過・出力サイズ -->
+          <div class="options-row">
+            <div class="control-group options-item">
+              <label class="control-label">形状</label>
+              <div class="button-group" id="shape-group">
+                <button class="btn-option active" data-value="square" type="button">正方形</button>
+                <button class="btn-option" data-value="rounded" type="button">角丸</button>
+              </div>
+            </div>
+            <div class="control-group options-item control-group-row">
+              <label class="control-label">透過</label>
+              <label class="toggle-switch">
+                <input type="checkbox" id="transparent-toggle">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="control-group options-item">
+              <label class="control-label">出力サイズ</label>
+              <div class="button-group" id="resolution-group">
+                <button class="btn-option active" data-value="128" type="button">128</button>
+                <button class="btn-option" data-value="256" type="button">256</button>
+                <button class="btn-option" data-value="512" type="button">512</button>
+              </div>
             </div>
           </div>
         </section>

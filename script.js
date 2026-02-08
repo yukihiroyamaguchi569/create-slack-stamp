@@ -188,8 +188,8 @@ function buildPresets() {
     card.dataset.index = index;
 
     const canvas = document.createElement('canvas');
-    canvas.width = 104;
-    canvas.height = 104;
+    canvas.width = 80;
+    canvas.height = 80;
     canvas.className = 'preset-thumb';
 
     const name = document.createElement('span');
@@ -210,7 +210,7 @@ function renderPresetThumbnails() {
     const preset = PRESETS[index];
     const canvas = card.querySelector('canvas');
     const text = state.text || 'Aa';
-    renderStamp(canvas, 104, {
+    renderStamp(canvas, 80, {
       text: text,
       bgColor: preset.bgColor,
       textColor: preset.textColor,
@@ -225,9 +225,12 @@ function renderPresetThumbnails() {
 // ── イベントバインド ──────────────────────
 
 function bindEvents() {
-  // テキスト入力
+  // テキスト入力（4文字までに制限）
   dom.textInput.addEventListener('input', () => {
-    state.text = dom.textInput.value;
+    const raw = dom.textInput.value;
+    const limited = raw.slice(0, 4);
+    if (raw !== limited) dom.textInput.value = limited;
+    state.text = limited;
     renderAllPreviews();
     renderPresetThumbnails();
   });
@@ -485,23 +488,35 @@ function renderStamp(canvas, size, opts) {
     }
   }
 
-  // テキスト
+  // テキスト（3〜4文字のときは2行表示）
   if (text.length > 0) {
-    const fontSize = calculateFontSize(ctx, text, opts.font, opts.fontStyle, size);
+    const lines = text.length >= 3 ? [text.slice(0, 2), text.slice(2)] : [text];
+    const fontSize = calculateFontSize(ctx, lines, opts.font, opts.fontStyle, size);
     ctx.font = buildFontString(opts.fontStyle, fontSize, opts.font);
     ctx.fillStyle = opts.textColor;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    // 微調整: 日本語フォントは少し上にずれるので補正
-    const metrics = ctx.measureText(text);
-    let yOffset = 0;
-    if (metrics.actualBoundingBoxAscent && metrics.actualBoundingBoxDescent) {
-      const textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
-      yOffset = (metrics.actualBoundingBoxAscent - textHeight / 2);
+    if (lines.length === 1) {
+      const metrics = ctx.measureText(text);
+      let yOffset = 0;
+      if (metrics.actualBoundingBoxAscent && metrics.actualBoundingBoxDescent) {
+        const textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+        yOffset = (metrics.actualBoundingBoxAscent - textHeight / 2);
+      }
+      ctx.fillText(text, size / 2, size / 2 + yOffset);
+    } else {
+      const lineGap = fontSize * 0.15;
+      const metrics0 = ctx.measureText(lines[0]);
+      const metrics1 = ctx.measureText(lines[1]);
+      const h0 = (metrics0.actualBoundingBoxAscent ?? fontSize * 0.8) + (metrics0.actualBoundingBoxDescent ?? fontSize * 0.2);
+      const h1 = (metrics1.actualBoundingBoxAscent ?? fontSize * 0.8) + (metrics1.actualBoundingBoxDescent ?? fontSize * 0.2);
+      const totalHeight = h0 + lineGap + h1;
+      const y1 = size / 2 - totalHeight / 2 + h0 / 2;
+      const y2 = size / 2 - totalHeight / 2 + h0 + lineGap + h1 / 2;
+      ctx.fillText(lines[0], size / 2, y1);
+      ctx.fillText(lines[1], size / 2, y2);
     }
-
-    ctx.fillText(text, size / 2, size / 2 + yOffset);
   }
 }
 
@@ -511,10 +526,12 @@ function buildFontString(fontStyle, fontSize, fontFamily) {
   return `${italic}${bold}${fontSize}px "${fontFamily}"`;
 }
 
-function calculateFontSize(ctx, text, fontFamily, fontStyle, canvasSize) {
+function calculateFontSize(ctx, lines, fontFamily, fontStyle, canvasSize) {
   const padding = canvasSize * 0.12;
   const maxWidth = canvasSize - padding * 2;
   const maxHeight = canvasSize - padding * 2;
+  const lineGapRatio = 0.15;
+  const isMultiLine = Array.isArray(lines) && lines.length > 1;
 
   let low = 4;
   let high = Math.floor(canvasSize * 0.9);
@@ -523,16 +540,26 @@ function calculateFontSize(ctx, text, fontFamily, fontStyle, canvasSize) {
   while (low <= high) {
     const mid = Math.floor((low + high) / 2);
     ctx.font = buildFontString(fontStyle, mid, fontFamily);
-    const metrics = ctx.measureText(text);
-    const textWidth = metrics.width;
 
-    // 高さの推定: actualBoundingBox が使えればそれを使う
-    let textHeight = mid; // fallback
-    if (metrics.actualBoundingBoxAscent !== undefined && metrics.actualBoundingBoxDescent !== undefined) {
-      textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+    let textWidth = 0;
+    let totalTextHeight = 0;
+
+    if (isMultiLine) {
+      lines.forEach((line) => {
+        const m = ctx.measureText(line);
+        textWidth = Math.max(textWidth, m.width);
+        const h = (m.actualBoundingBoxAscent ?? mid * 0.8) + (m.actualBoundingBoxDescent ?? mid * 0.2);
+        totalTextHeight += h;
+      });
+      totalTextHeight += mid * lineGapRatio * (lines.length - 1);
+    } else {
+      const text = typeof lines === 'string' ? lines : lines[0];
+      const metrics = ctx.measureText(text);
+      textWidth = metrics.width;
+      totalTextHeight = (metrics.actualBoundingBoxAscent ?? mid * 0.8) + (metrics.actualBoundingBoxDescent ?? mid * 0.2);
     }
 
-    if (textWidth <= maxWidth && textHeight <= maxHeight) {
+    if (textWidth <= maxWidth && totalTextHeight <= maxHeight) {
       result = mid;
       low = mid + 1;
     } else {
