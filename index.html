@@ -17,136 +17,141 @@
       <p class="header-subtitle">Slack / Discord 用カスタムスタンプを作ろう</p>
     </header>
 
-    <main>
-      <!-- プレビュー -->
-      <section class="section preview-section">
-        <div class="preview-main" id="preview-main">
-          <canvas id="preview-canvas" width="256" height="256"></canvas>
-        </div>
-        <div class="preview-sizes">
-          <span class="preview-sizes-label">実際の表示サイズ</span>
-          <div class="preview-size-items">
-            <div class="preview-size-item">
-              <div class="preview-size-canvas-wrap" id="preview-small-wrap">
-                <canvas id="small-canvas" width="22" height="22"></canvas>
+    <main class="main-layout">
+      <!-- 左列: カスタマイズ -->
+      <div class="col-left">
+        <section class="section">
+          <h2 class="section-title">カスタマイズ</h2>
+
+          <!-- テキスト -->
+          <div class="control-group">
+            <label class="control-label" for="text-input">テキスト</label>
+            <input type="text" id="text-input" class="text-input" maxlength="4" placeholder="1〜4文字を入力" value="OK">
+          </div>
+
+          <!-- フォント -->
+          <div class="control-group">
+            <label class="control-label">フォント</label>
+            <button class="font-trigger" id="font-trigger" type="button">
+              <span id="font-trigger-text">Noto Sans JP</span>
+              <span class="font-trigger-arrow" id="font-trigger-arrow">&#9660;</span>
+            </button>
+            <div class="font-panel" id="font-panel">
+              <div id="recent-fonts-section" class="font-section hidden">
+                <div class="font-section-label">最近使ったフォント</div>
+                <div id="recent-fonts-list"></div>
               </div>
-              <span class="preview-size-label">22px</span>
-            </div>
-            <div class="preview-size-item">
-              <div class="preview-size-canvas-wrap" id="preview-medium-wrap">
-                <canvas id="medium-canvas" width="48" height="48"></canvas>
+              <div class="font-section">
+                <div class="font-section-label">すべてのフォント</div>
+                <div id="all-fonts-list"></div>
               </div>
-              <span class="preview-size-label">48px</span>
             </div>
           </div>
-        </div>
-      </section>
 
-      <!-- プリセット -->
-      <section class="section">
-        <h2 class="section-title">プリセット</h2>
-        <div class="presets-scroll">
-          <div class="presets-container" id="presets-container"></div>
-        </div>
-      </section>
+          <!-- フォントスタイル -->
+          <div class="control-group">
+            <label class="control-label">フォントスタイル</label>
+            <div class="button-group" id="font-style-group">
+              <button class="btn-option active" data-value="normal" type="button">Regular</button>
+              <button class="btn-option" data-value="bold" type="button"><strong>Bold</strong></button>
+              <button class="btn-option" data-value="italic" type="button"><em>Italic</em></button>
+              <button class="btn-option" data-value="bold italic" type="button"><strong><em>BI</em></strong></button>
+            </div>
+          </div>
 
-      <!-- カスタマイズ -->
-      <section class="section">
-        <h2 class="section-title">カスタマイズ</h2>
+          <!-- 背景色 -->
+          <div class="control-group">
+            <label class="control-label">背景色</label>
+            <div class="color-control">
+              <input type="color" id="bg-color-picker" class="color-picker" value="#5C6BC0">
+              <span class="color-hex" id="bg-color-hex">#5C6BC0</span>
+            </div>
+            <div class="color-swatches" id="bg-swatches"></div>
+          </div>
 
-        <!-- テキスト -->
-        <div class="control-group">
-          <label class="control-label" for="text-input">テキスト</label>
-          <input type="text" id="text-input" class="text-input" maxlength="4" placeholder="1〜4文字を入力" value="OK">
-        </div>
+          <!-- 文字色 -->
+          <div class="control-group">
+            <label class="control-label">文字色</label>
+            <div class="color-control">
+              <input type="color" id="text-color-picker" class="color-picker" value="#FFFFFF">
+              <span class="color-hex" id="text-color-hex">#FFFFFF</span>
+            </div>
+            <div class="color-swatches" id="text-swatches"></div>
+          </div>
 
-        <!-- フォント -->
-        <div class="control-group">
-          <label class="control-label">フォント</label>
-          <button class="font-trigger" id="font-trigger" type="button">
-            <span id="font-trigger-text">Noto Sans JP</span>
-            <span class="font-trigger-arrow" id="font-trigger-arrow">&#9660;</span>
+          <!-- 形状 -->
+          <div class="control-group">
+            <label class="control-label">形状</label>
+            <div class="button-group" id="shape-group">
+              <button class="btn-option active" data-value="square" type="button">正方形</button>
+              <button class="btn-option" data-value="rounded" type="button">角丸</button>
+            </div>
+          </div>
+
+          <!-- 背景透過 -->
+          <div class="control-group control-group-row">
+            <label class="control-label">背景透過</label>
+            <label class="toggle-switch">
+              <input type="checkbox" id="transparent-toggle">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <!-- 出力サイズ -->
+          <div class="control-group">
+            <label class="control-label">出力サイズ</label>
+            <div class="button-group" id="resolution-group">
+              <button class="btn-option active" data-value="128" type="button">128px</button>
+              <button class="btn-option" data-value="256" type="button">256px</button>
+              <button class="btn-option" data-value="512" type="button">512px</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ダウンロード -->
+        <section class="section download-section">
+          <button class="btn-download" id="download-btn" type="button">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            PNG をダウンロード
           </button>
-          <div class="font-panel" id="font-panel">
-            <div id="recent-fonts-section" class="font-section hidden">
-              <div class="font-section-label">最近使ったフォント</div>
-              <div id="recent-fonts-list"></div>
+          <p class="download-hint" id="download-hint"></p>
+        </section>
+      </div>
+
+      <!-- 右列: プレビュー＋プリセット -->
+      <div class="col-right">
+        <!-- プレビュー -->
+        <section class="section preview-section">
+          <div class="preview-main" id="preview-main">
+            <canvas id="preview-canvas" width="256" height="256"></canvas>
+          </div>
+          <div class="preview-sizes">
+            <span class="preview-sizes-label">実際の表示サイズ</span>
+            <div class="preview-size-items">
+              <div class="preview-size-item">
+                <div class="preview-size-canvas-wrap" id="preview-small-wrap">
+                  <canvas id="small-canvas" width="22" height="22"></canvas>
+                </div>
+                <span class="preview-size-label">22px</span>
+              </div>
+              <div class="preview-size-item">
+                <div class="preview-size-canvas-wrap" id="preview-medium-wrap">
+                  <canvas id="medium-canvas" width="48" height="48"></canvas>
+                </div>
+                <span class="preview-size-label">48px</span>
+              </div>
             </div>
-            <div class="font-section">
-              <div class="font-section-label">すべてのフォント</div>
-              <div id="all-fonts-list"></div>
-            </div>
           </div>
-        </div>
+        </section>
 
-        <!-- フォントスタイル -->
-        <div class="control-group">
-          <label class="control-label">フォントスタイル</label>
-          <div class="button-group" id="font-style-group">
-            <button class="btn-option active" data-value="normal" type="button">Regular</button>
-            <button class="btn-option" data-value="bold" type="button"><strong>Bold</strong></button>
-            <button class="btn-option" data-value="italic" type="button"><em>Italic</em></button>
-            <button class="btn-option" data-value="bold italic" type="button"><strong><em>BI</em></strong></button>
+        <!-- プリセット -->
+        <section class="section">
+          <h2 class="section-title">プリセット</h2>
+          <div class="presets-scroll">
+            <div class="presets-container" id="presets-container"></div>
           </div>
-        </div>
-
-        <!-- 背景色 -->
-        <div class="control-group">
-          <label class="control-label">背景色</label>
-          <div class="color-control">
-            <input type="color" id="bg-color-picker" class="color-picker" value="#5C6BC0">
-            <span class="color-hex" id="bg-color-hex">#5C6BC0</span>
-          </div>
-          <div class="color-swatches" id="bg-swatches"></div>
-        </div>
-
-        <!-- 文字色 -->
-        <div class="control-group">
-          <label class="control-label">文字色</label>
-          <div class="color-control">
-            <input type="color" id="text-color-picker" class="color-picker" value="#FFFFFF">
-            <span class="color-hex" id="text-color-hex">#FFFFFF</span>
-          </div>
-          <div class="color-swatches" id="text-swatches"></div>
-        </div>
-
-        <!-- 形状 -->
-        <div class="control-group">
-          <label class="control-label">形状</label>
-          <div class="button-group" id="shape-group">
-            <button class="btn-option active" data-value="square" type="button">正方形</button>
-            <button class="btn-option" data-value="rounded" type="button">角丸</button>
-          </div>
-        </div>
-
-        <!-- 背景透過 -->
-        <div class="control-group control-group-row">
-          <label class="control-label">背景透過</label>
-          <label class="toggle-switch">
-            <input type="checkbox" id="transparent-toggle">
-            <span class="toggle-slider"></span>
-          </label>
-        </div>
-
-        <!-- 出力サイズ -->
-        <div class="control-group">
-          <label class="control-label">出力サイズ</label>
-          <div class="button-group" id="resolution-group">
-            <button class="btn-option active" data-value="128" type="button">128px</button>
-            <button class="btn-option" data-value="256" type="button">256px</button>
-            <button class="btn-option" data-value="512" type="button">512px</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- ダウンロード -->
-      <section class="section download-section">
-        <button class="btn-download" id="download-btn" type="button">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          PNG をダウンロード
-        </button>
-        <p class="download-hint" id="download-hint"></p>
-      </section>
+        </section>
+      </div>
     </main>
 
     <footer class="footer">

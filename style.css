@@ -37,9 +37,28 @@ body {
 
 /* Layout */
 .container {
-  max-width: 540px;
+  max-width: 960px;
   margin: 0 auto;
   padding: 16px;
+}
+
+/* Two-column layout */
+.main-layout {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.col-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.col-right {
+  width: 340px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 16px;
 }
 
 /* Header */
@@ -201,6 +220,7 @@ body {
 
 .presets-container {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   padding-bottom: 8px;
 }
@@ -583,7 +603,25 @@ input:checked + .toggle-slider::before {
 /* ============================================
    Responsive
    ============================================ */
-@media (min-width: 600px) {
+
+/* モバイル: 1カラム、右列が先に表示 */
+@media (max-width: 767px) {
+  .main-layout {
+    flex-direction: column-reverse;
+  }
+
+  .col-right {
+    width: 100%;
+    position: static;
+  }
+
+  .presets-container {
+    flex-wrap: nowrap;
+  }
+}
+
+/* タブレット以上: 2カラム */
+@media (min-width: 768px) {
   .container {
     padding: 24px;
   }
@@ -608,5 +646,26 @@ input:checked + .toggle-slider::before {
   .preview-main canvas {
     width: 240px;
     height: 240px;
+  }
+}
+
+/* 大画面 */
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1040px;
+  }
+
+  .col-right {
+    width: 380px;
+  }
+
+  .preview-main {
+    width: 280px;
+    height: 280px;
+  }
+
+  .preview-main canvas {
+    width: 280px;
+    height: 280px;
   }
 }
